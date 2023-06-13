@@ -1,5 +1,6 @@
 <h1 align="center"> BANDIT </h1>
 
+![Black-Thorn-Art](https://github.com/boranakova/wargames/assets/56170942/dbc94ff2-9ce2-4135-8ee8-e7f34ec2224e)
 
 > This file contains the commands mentioned in the solutions. Main purpose of this game is gathering information about the level and performing requested ways for ensuring password of the next level. 
 ## ✨ What is Wargames 
