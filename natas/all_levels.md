@@ -100,116 +100,186 @@ web application analysis tool can help but the most used tool is <b>Burp Suite</
 ![3-4 4](https://github.com/boranakova/wargames/assets/56170942/d5f71a10-3432-4dd7-907c-7dabf62c50ef)
 
 ### 4-5
+> NOTE : First of all I used Burp to find any changes in website of the current level. Everything seemed normal at first. But then I noticed the Cookie section has a value named <b>loggedin=0</b>. So as a curious fellow i wanted to change it from 0 to 1.
+![4-5 1](https://github.com/boranakova/wargames/assets/56170942/cc4f97f6-d63c-438d-9395-ae657fa25c95)
+> NOTE : Well... c: 
+![4-5 2](https://github.com/boranakova/wargames/assets/56170942/832c0c0d-c261-4c78-a4e7-dfee52709c70)
+
+#### What are Cookies ? 
+Cookies are simply wants to know you or your device. That are used to identify your computer as you use a computer network.
+Specific cookies known as HTTP cookies are used to identify specific users and improve your web browsing experience. They are built like tracking and saving information about each user's session. 
+
+### 5-6
+![5-6 1](https://github.com/boranakova/wargames/assets/56170942/f3373458-dfab-40c0-902c-114a9540fbee)
+
+This level contains a <b>source code</b> written in <b>PHP</b> !
+
+> NOTE : To acquiring a password for the next level you have to analyse source code given by the website. When I examine <b>index-source.html</b> 
+> I found an embedded PHP code in html file. When I understand the source code. I tried to access the "includes/secret.inc" file via URL.
+>  But I got  <b>Autharization has failed error </b> from website. So I decide to connect with web server via FTP. Because I had the credentials of current level So why not? 
+>  
+```sh
+ftp http://natas6.natas.labs.overthewire.org/includes/secret.inc 
+cat secret.inc
+```
+![5-6 2](https://github.com/boranakova/wargames/assets/56170942/2e248202-ab79-418f-a063-92b429c033f7)
+> NOTE : Then I put the secret key in textfield and submitting the query. 
+
+![5-6 3](https://github.com/boranakova/wargames/assets/56170942/77d1ed75-6629-4561-aab6-a86f1c5804bc)
+<br></br>
+![5-6 4](https://github.com/boranakova/wargames/assets/56170942/b488d714-f49e-42bd-90c7-b4f5a1b7fc40)
+
+### 6-7
+This level gives hint about the directory stored password for the next level.
+<br></br>
+![6-7 1](https://github.com/boranakova/wargames/assets/56170942/dd6220c7-af7c-4ed5-8557-f697f238d891)
+
+>NOTE : The website has <b>Home</b> and <b>About</b> page and index url of a website directs these requests with <b>page</b> parameter.
+>So I formatting the URL like below and I got the password for the next level. 
+
+![6-7 2](https://github.com/boranakova/wargames/assets/56170942/7e027b5e-5e7e-4ad0-b33a-fdabf6d14bd6)
+
+### 7-8 
+This level contains a <b>source code</b> written in <b>PHP</b> !
+>NOTE : When I examine the source code I saw the function called encodeSecret(). It is simply used base64 encoding. Then the output is reversed. and finally the output is converted binary to hexadecimal. We already have the encoded secret key. All we have to do is resolve all the steps in reverse. This means, we have to converting hexadecimal to binary then output will be reversed and finally decoding base64 will give us the secret key.  
 
 
+![7-8 1](https://github.com/boranakova/wargames/assets/56170942/d8f2d45c-0286-4eea-a99f-ee35ea601a04)
 
-
-I solved  <b>6-7</b> with this command ;
+Normally the specific websites like [CyberChef](https://gchq.github.io/CyberChef/) already solve this methods automatically. But I wanted to do this level manually for hands-on experience with commands of Linux.
 
 ```sh
-find / -user bandit7 -group bandit6 -size 33c & ls-lrha
+touch myencoded.txt
+nano myencoded.txt
+cat myencoded.txt
 ```
-I solved <b>7-8</b> with this command ;
-```sh
-grep "millionth" data.txt 
-```
-I solved <b>13-14</b> with this command ;
-```sh
-ssh -i sshkey.private bandit14@localhost -p 2220 
-```
-
-I solved <b>16-17</b> with this command ;
-```sh
-nmap -sV localhost -p 31000-32000 
-```
-> NOTE :
-I simply put <b>man</b> command to learn what I need for this situation. Then i decided to use <b>-sV</b> ( sV flag lets us do a service/version detection scan while listening these ports. ) using <b>-p</b> for scanning all ports given the range of between 31000-32000. The level wants us to find SSL response of any server. When I found the server I used <b>openssl s_client</b> command then retrieved the password for the next level.
-```sh
-openssl s_client -connect localhost:31790 
-```
-
-
-### 19-23
-In these levels you're going to learn <b>setuid</b> and <b>cron</b> concepts of Linux 
-> NOTE : I googled these concepts and learned deeply before solving the level.
-
-I solved <b>20-21</b> with this command ;
-```sh
-echo -n 'GbKksEFF4yrVs6il55v6gwY5aVje5f0j' | nc -l -p 1234 & 
-```
-> NOTE : <b>&</b> let the process run in the background. While running this command. I execute the setuid binary in the homedirectory given by level. 
-> And I entered the port I specified with <b>nc</b> ( <b>-l</b> flag listens of an incoming connection <b>-p</b> flag specifies a port ).
-```sh
-./suconnect 1234
-```
-### 24-26
-
-I solved <b>24-25</b> with this command ;
-> NOTE :
-> This level wants us to use brute-force method for reaching next level. So I researched how to use <b>for-loop</b> in bash scripting. Then I created a bash file with for loop range between 0000..9999. After recording all these entries. I sorted the result file then found the correct one.
-> 
-```sh
-
-#!/bin/bash
-
-for i in {0000..9999}
-do
-        echo UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ $i >> possibilities.txt
-done
-
-cat possibilities.txt | nc localhost 30002 > result.txt
-```
-I named it bf_entries.sh then I executed the directory 
+![7-8 2](https://github.com/boranakova/wargames/assets/56170942/2e6c4c6e-aa18-40e0-969f-10556c1e4d43)
 
 ```sh
-./bf_entries.sh 
-
+xxd -r -p myencoded.txt myencoded.bin 
 ```
+>NOTE : <b>-r</b> flag is reverting hexdump into binary. <b>-p</b> flag is an output with plain style.
+
+![7-8 3](https://github.com/boranakova/wargames/assets/56170942/7bfafde5-befb-4de7-9691-0d3293fe6889)
+
+>NOTE : I reversed my output with <b>rev</b> command.
 ```sh
-sort result.txt
+cat myencoded.bin | rev
 ```
-### 27-34
-In these levels you're going to learn some of Git commands.
+>NOTE : I decoded via base64 with my output.
+```sh
+echo b3ViV1lmMmtCcQ== | base64 --decode
+```
+![7-8 4](https://github.com/boranakova/wargames/assets/56170942/e9bced2a-0398-4ee4-94de-6d86c33992da)
 
->NOTE:
-> You'll have to clone the remote repository to directory of a current level. I used some of these commands
+>NOTE : I put the key on the input.
+
+![7-8 5](https://github.com/boranakova/wargames/assets/56170942/a66ef34e-4948-4c28-85ca-aa9c10e14a9e)
+
+
+### 8-9
+This level contains a <b>source code</b> written in <b>PHP</b> !
+<br></br>
+![8-9 1](https://github.com/boranakova/wargames/assets/56170942/61ba50b2-d82b-4a57-9188-773a2bf921b3)
+
+> NOTE : <b>passthru</b> executes a command so If I inject the method with <b>|</b> , <b>&</b> or <b>;</b>. It will give results of any requests.
+
+![8-9 2](https://github.com/boranakova/wargames/assets/56170942/9e780dc3-9a4f-48e6-bcce-5ecd7910ab5e)
+> Like that ! Let me try something different... What if I....
+<br></br>
+![8-9 3](https://github.com/boranakova/wargames/assets/56170942/4da41322-0e24-413c-a1af-6dd7e06db6b5)
+
+### 9-10
+
+This level contains a <b>source code</b> written in <b>PHP</b> !
+Similar to 8-9 but updated with some security measures. So <b>|</b> , <b>&</b> or <b>;</b> are not gonna work !
+
+![9-10 1](https://github.com/boranakova/wargames/assets/56170942/cdd352fe-2941-4110-b347-c1b4884e2614)
+
+> NOTE : I did some research and found a command name <b>curl</b>. It enables data exchange between a device and server. <b>passthru</b> still be able to execute a command. So I'm going to inject the command again.
+
+![9-10 2](https://github.com/boranakova/wargames/assets/56170942/ee090398-6587-4fb9-ae1e-e74cb50a4414)
+
+
+
+### 10-11
+
+This level contains a <b>massive</b> <b>source code</b> written in <b>PHP</b> !
+
+![10-11 1](https://github.com/boranakova/wargames/assets/56170942/557ef647-ab32-47cf-ad4f-36e6baaaabc4)
+
+
+> NOTE : I did lot of research for understanding XOR encryption. I tried to understand the code below.
 
 ```sh
-git clone ssh://bandit27-git@localhost/home/bandit27-git/repo 
-```
+<?
+$defaultdata = array( "showpassword"=>"no", "bgcolor"=>"#ffffff");
 
->If you obtain the repo successfully , You're going to learn what you supposed to do in this task .
->I used 
-```sh
-git log 
-```
->to find any previous commits.
+function xor_encrypt($in) {
+    $key = '<censored>';
+    $text = $in;
+    $outText = '';
 
-```sh
-git tag 
-```
->to find any tags in repo
+    // Iterate through each character
+    for($i=0;$i<strlen($text);$i++) {
+    $outText .= $text[$i] ^ $key[$i % strlen($key)];
+    }
+    return $outText;
+}
 
-```sh
-git add
+function loadData($def) {
+    global $_COOKIE;
+    $mydata = $def;
+    if(array_key_exists("data", $_COOKIE)) {
+    $tempdata = json_decode(xor_encrypt(base64_decode($_COOKIE["data"])), true);
+    if(is_array($tempdata) && array_key_exists("showpassword", $tempdata) && array_key_exists("bgcolor", $tempdata)) {
+        if (preg_match('/^#(?:[a-f\d]{6})$/i', $tempdata['bgcolor'])) {
+        $mydata['showpassword'] = $tempdata['showpassword'];
+        $mydata['bgcolor'] = $tempdata['bgcolor'];
+        }
+    }
+    }
+    return $mydata;
+}
+function saveData($d) {
+    setcookie("data", base64_encode(xor_encrypt(json_encode($d))));
+}
+$data = loadData($defaultdata);
+if(array_key_exists("bgcolor",$_REQUEST)) {
+    if (preg_match('/^#(?:[a-f\d]{6})$/i', $_REQUEST['bgcolor'])) {
+        $data['bgcolor'] = $_REQUEST['bgcolor'];
+    }
+}
+saveData($data);
+?>
 ```
->to adding the file I created.
+> NOTE : When the parameter is sent to the website , Website creates cookie named <b>data</b> This cookie was loading with Base64Decode > XOR  order and saving with XOR > Base64Encode. So we need to do reversely for finding the key. Firstly I executed a code in online PHP editor for formatting to JSON. 
 
-```sh
-git commit 
-```
->to committing my changes.
+![10-11 2](https://github.com/boranakova/wargames/assets/56170942/090775ef-198b-4e0c-9b97-28e063434005)
 
-```sh
-git push 
-```
->to uploading local repo to remote repo and validate(I gave you a hint this is related to 31-32 ;) ).
+> NOTE : Then I obtained the cookie named data from Burp. I Copied and pasted to [CyberChef](https://gchq.github.io/CyberChef/) as an input. Executing the steps generated the key. 
+
+![10-11 3](https://github.com/boranakova/wargames/assets/56170942/134b2d5b-2d6f-40bf-9bb9-e0cedd256303)
+
+
+> NOTE : The key can be inputted in XOR. Afterwards Base64Encode process will start.
+
+
+![10-11 4](https://github.com/boranakova/wargames/assets/56170942/0fe2ef9a-1d54-443e-a191-c80bb90ba1f7)
+
+> NOTE : If we change <b>showpassword</b> variable from no to yes with XOR encryption. Then it will encode to Base64 and give it cookie data stored the password. Like <b>3-4</b> or <b>4-5</b> , We need to change the cookie variable named data to new one. 
+
+If these steps done right. You will see the website has been updated with password for the next level.
+![10-11 5](https://github.com/boranakova/wargames/assets/56170942/8c721fc1-7905-40da-a0e6-3407bb302aca)
+
+
+
+
 
 
 
 ### FINAL
 
-![Screenshot_5](https://github.com/boranakova/wargames/assets/56170942/458eee0b-aee1-4cd7-820f-10e2b64322d5)
 
 
 ## Author
